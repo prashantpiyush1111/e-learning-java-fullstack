@@ -13,9 +13,21 @@
         <ul class="nav-links">
             <li>Home</li>
             <li>Courses</li>
-            <li>Login</li>
+            <li>Students</li>
         </ul>
     </nav>
+
+    <section style="padding:20px;">
+  <h2>Student Login</h2>
+
+  <input type="email" id="loginEmail" placeholder="Email"><br><br>
+  <input type="password" id="loginPassword" placeholder="Password"><br><br>
+
+  <button onclick="loginStudent()">Login</button>
+
+  <p id="loginMsg"></p>
+</section>
+
 
     <!-- Courses Section -->
     <section class="courses">
@@ -42,6 +54,24 @@
             </div>
 
         </div>
+    </section>
+
+
+    <section style="padding:20px;">
+    <h2>Add Student</h2>
+
+    <input type="text" id="name" placeholder="Name"><br><br>
+    <input type="email" id="email" placeholder="Email"><br><br>
+    <input type="password" id="password" placeholder="Password"><br><br>
+
+    <button onclick="addStudent()">Add Student</button>
+</section>
+
+
+    <!-- Students From Backend -->
+    <section style="padding:20px;">
+        <h2>Students List (From Backend)</h2>
+        <ul id="studentList"></ul>
     </section>
 
     <script src="script.js"></script>
