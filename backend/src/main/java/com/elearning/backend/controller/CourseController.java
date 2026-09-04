@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @PostMapping
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<CourseResponse> createCourse(
             @Valid @RequestBody CreateCourseRequest request,
             Authentication authentication) {
@@ -34,6 +36,7 @@ public class CourseController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('STUDENT', 'INSTRUCTOR', 'ADMIN')")
     public ResponseEntity<Page<CourseResponse>> getCourses(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String category,
@@ -54,12 +57,8 @@ public class CourseController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CourseResponse> getCourseById(@PathVariable Long id) {
-        return ResponseEntity.ok(courseService.getCourseById(id));
-    }
-
     @GetMapping("/my")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<List<CourseResponse>> getMyCourses(
             Authentication authentication) {
 
@@ -68,7 +67,14 @@ public class CourseController {
         );
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('STUDENT', 'INSTRUCTOR', 'ADMIN')")
+    public ResponseEntity<CourseResponse> getCourseById(@PathVariable Long id) {
+        return ResponseEntity.ok(courseService.getCourseById(id));
+    }
+
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<CourseResponse> updateCourse(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCourseRequest request,
@@ -80,6 +86,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<Void> deleteCourse(
             @PathVariable Long id,
             Authentication authentication) {
