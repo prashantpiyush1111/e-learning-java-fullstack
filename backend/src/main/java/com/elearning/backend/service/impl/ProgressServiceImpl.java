@@ -42,7 +42,7 @@ public class ProgressServiceImpl implements ProgressService {
                 .orElseGet(() -> LectureProgress.builder().enrollment(enrollment).lecture(lecture).build());
 
         int duration = lecture.getDurationSeconds() == null ? 0 : lecture.getDurationSeconds();
-        int watched = Math.min(request.getWatchedSeconds(), Math.max(duration, request.getWatchedSeconds()));
+        int watched = request.getWatchedSeconds();
         progress.setWatchedSeconds(watched);
         progress.setCompleted(request.isCompleted() || (duration > 0 && watched >= duration));
         progress = progressRepository.save(progress);
@@ -73,17 +73,12 @@ public class ProgressServiceImpl implements ProgressService {
     }
 
     private void refreshEnrollmentProgress(Enrollment enrollment) {
-        List<LectureProgress> progress = progressRepository.findByEnrollmentId(enrollment.getId());
-        long totalLectures = lectureRepository.findBySectionIdOrderByDisplayOrderAsc(0L).size();
-        List<Lecture> lectures = enrollment.getCourse().getId() == null ? List.of() :
-                enrollment.getCourse().getId() == null ? List.of() :
-                enrollment.getCourse().getId() != null ? lectureRepository.findAll().stream()
-                        .filter(l -> l.getSection().getCourse().getId().equals(enrollment.getCourse().getId())).toList() : List.of();
-        totalLectures = lectures.size();
-        long completedLectures = progress.stream().filter(LectureProgress::isCompleted).count();
-        double percentage = totalLectures == 0 ? 0.0 : (completedLectures * 100.0) / totalLectures;
+        List<Lecture> lectures = lectureRepository.findBySectionCourseId(enrollment.getCourse().getId());
+        long completedLectures = progressRepository.findByEnrollmentId(enrollment.getId()).stream()
+                .filter(LectureProgress::isCompleted).count();
+        double percentage = lectures.isEmpty() ? 0.0 : (completedLectures * 100.0) / lectures.size();
         enrollment.setProgressPercentage(Math.round(percentage * 100.0) / 100.0);
-        enrollment.setCompleted(totalLectures > 0 && completedLectures == totalLectures);
+        enrollment.setCompleted(!lectures.isEmpty() && completedLectures == lectures.size());
         enrollmentRepository.save(enrollment);
     }
 
