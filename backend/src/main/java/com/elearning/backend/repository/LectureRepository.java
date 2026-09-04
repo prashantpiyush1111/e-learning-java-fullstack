@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
     List<Lecture> findBySectionIdOrderByDisplayOrderAsc(Long sectionId);
+    List<Lecture> findBySectionCourseId(Long courseId);
     boolean existsByIdAndSectionCourseInstructorId(Long lectureId, Long instructorId);
 }
