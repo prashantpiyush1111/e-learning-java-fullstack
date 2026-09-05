@@ -12,10 +12,8 @@ import AdminUsers from './pages/admin/AdminUsers';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 
-function Shell() { return <><Navbar /><Routes><Route path="/profile" element={<Profile />} /></Routes></>; }
-
 function App() {
-  return <><Routes>
+  return <><Navbar /><Routes>
     <Route path="/" element={<Navigate to="/login" replace />} />
     <Route path="/login" element={<Login />} />
     <Route element={<ProtectedRoute roles={["STUDENT"]} />}>
@@ -37,6 +35,6 @@ function App() {
       <Route path="/admin/profile" element={<Profile />} />
     </Route>
     <Route path="*" element={<div className="page-placeholder"><h1>404</h1><p>Page not found.</p></div>} />
-  </Routes><Shell /></>;
+  </Routes></>;
 }
 export default App;
