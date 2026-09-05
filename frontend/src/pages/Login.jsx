@@ -35,6 +35,7 @@ export default function Login() {
       <label>Password<input type="password" required autoComplete="current-password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} /></label>
       {error && <div className="alert error">{error}</div>}
       <button className="primary-button auth-submit" disabled={submitting}>{submitting ? 'Signing in…' : 'Sign in'}</button>
+      <p className="auth-switch">Don't have an account? <button type="button" onClick={() => navigate('/register')}>Create account</button></p>
     </form>
   </section></main>;
 }
