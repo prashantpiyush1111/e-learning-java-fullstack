@@ -10,12 +10,14 @@ import InstructorCourseManager from './pages/InstructorCourseManager';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Profile from './pages/Profile';
 
 function App() {
   return <><Navbar /><Routes>
     <Route path="/" element={<Navigate to="/login" replace />} />
     <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
     <Route element={<ProtectedRoute roles={["STUDENT"]} />}>
       <Route path="/dashboard" element={<StudentDashboard />} />
       <Route path="/courses" element={<CourseCatalog />} />
