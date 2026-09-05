@@ -8,13 +8,12 @@ import InstructorCourseForm from './pages/InstructorCourseForm';
 import InstructorCourseManager from './pages/InstructorCourseManager';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
-
-function LoginPlaceholder() { return <div className="page-placeholder"><h1>E-Learning Platform</h1><p>Login module coming next.</p></div>; }
+import Login from './pages/Login';
 
 function App() {
   return <Routes>
     <Route path="/" element={<Navigate to="/login" replace />} />
-    <Route path="/login" element={<LoginPlaceholder />} />
+    <Route path="/login" element={<Login />} />
     <Route element={<ProtectedRoute roles={["STUDENT"]} />}>
       <Route path="/dashboard" element={<StudentDashboard />} />
       <Route path="/courses" element={<CourseCatalog />} />
