@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { getCurrentUser, login as loginRequest, refreshToken as refreshTokenRequest } from '../api/authApi';
+import { getCurrentUser, login as loginRequest, refreshToken as refreshTokenRequest, register as registerRequest } from '../api/authApi';
 
 const AuthContext = createContext(null);
 const ACCESS_TOKEN_KEY = 'elearning_access_token';
@@ -33,6 +33,12 @@ export function AuthProvider({ children }) {
     return response.data;
   }, [persistSession]);
 
+  const register = useCallback(async (payload) => {
+    const response = await registerRequest(payload);
+    persistSession(response.data);
+    return response.data;
+  }, [persistSession]);
+
   useEffect(() => {
     let active = true;
     const initialize = async () => {
@@ -58,7 +64,7 @@ export function AuthProvider({ children }) {
     return () => { active = false; };
   }, [logout, persistSession]);
 
-  const value = useMemo(() => ({ user, accessToken, loading, login, logout, persistSession }), [user, accessToken, loading, login, logout, persistSession]);
+  const value = useMemo(() => ({ user, accessToken, loading, login, register, logout, persistSession }), [user, accessToken, loading, login, register, logout, persistSession]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
