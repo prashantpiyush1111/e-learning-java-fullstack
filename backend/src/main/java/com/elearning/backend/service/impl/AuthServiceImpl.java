@@ -12,11 +12,13 @@ import com.elearning.backend.exception.UnauthorizedException;
 import com.elearning.backend.repository.RoleRepository;
 import com.elearning.backend.repository.UserRepository;
 import com.elearning.backend.security.CustomUserDetails;
+import com.elearning.backend.security.CustomUserDetailsService;
 import com.elearning.backend.security.JwtService;
 import com.elearning.backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     public AuthResponse register(RegisterRequest request) {
@@ -116,6 +119,25 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return new MessageResponse("Password changed successfully");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String refreshAccessToken(String refreshToken) {
+        try {
+            String username = jwtService.extractUsername(refreshToken);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            if (!jwtService.isTokenValid(refreshToken, userDetails)) {
+                throw new UnauthorizedException("Invalid or expired refresh token");
+            }
+
+            return jwtService.generateAccessToken(userDetails);
+        } catch (UnauthorizedException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw new UnauthorizedException("Invalid or expired refresh token");
+        }
     }
 
     private AuthResponse buildAuthResponse(CustomUserDetails userDetails, User user) {
