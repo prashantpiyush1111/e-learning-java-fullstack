@@ -2,6 +2,7 @@ package com.elearning.backend.controller;
 
 import com.elearning.backend.dto.request.ChangePasswordRequest;
 import com.elearning.backend.dto.request.LoginRequest;
+import com.elearning.backend.dto.request.RefreshTokenRequest;
 import com.elearning.backend.dto.request.RegisterRequest;
 import com.elearning.backend.dto.response.AuthResponse;
 import com.elearning.backend.dto.response.MessageResponse;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,6 +34,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String, String>> refresh(
+            @Valid @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(Map.of("accessToken", authService.refreshAccessToken(request.getRefreshToken())));
     }
 
     @GetMapping("/me")
