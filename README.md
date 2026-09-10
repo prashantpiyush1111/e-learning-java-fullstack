@@ -56,7 +56,7 @@ cd backend
 mvn spring-boot:run
 ```
 
-The API is expected at `http://localhost:8080/api` unless configured otherwise.
+The API is expected at `http://localhost:8083/api` unless configured otherwise.
 
 ## Running the Frontend
 
@@ -69,7 +69,7 @@ npm run dev
 Optional API configuration:
 
 ```env
-VITE_API_BASE_URL=http://localhost:8080/api
+VITE_API_BASE_URL=http://localhost:8083/api
 ```
 
 ## Authentication
